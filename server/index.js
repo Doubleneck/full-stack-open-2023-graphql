@@ -97,19 +97,27 @@ let books = [
   you can remove the placeholder query once your first one has been implemented 
 */
 
+
 const typeDefs = `
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     genres: [String]
     id: ID!
   }
+
+  type Author {
+    name: String!
+    bookCount: Int!
+  }  
+
   type Query {
     bookCount: Int!,
     authorCount: Int!,
     allBooks: [Book!]!
-  }
+    allAuthors: [Author!]!
+  }  
 `
 
 const resolvers = {
@@ -117,7 +125,22 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: () => books,
-  }
+    allAuthors: () => authors,
+  },
+  Book: {
+    title: (root) => root.title,
+    published: (root) => root.published,
+    genres: (root) => root.genres,
+    author: (root) => {
+      return { 
+      name: root.author,
+      }
+    }
+  },
+  Author: {
+    name: (root) => root.name,
+    bookCount: (root) => books.filter(book => book.author === root.name).length
+  },
 }
 
 const server = new ApolloServer({
