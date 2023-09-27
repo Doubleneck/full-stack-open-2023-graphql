@@ -1,4 +1,4 @@
-import { useQuery,useMutation  } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import { useState } from 'react'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 
@@ -7,66 +7,78 @@ const Authors = (props) => {
     return null
   }
 
-  const [author_name, setAuthorname] = useState('')
-  const [born, setBorn] = useState('')    
+  const [authorId, setAuthorId] = useState('')
+  const [born, setBorn] = useState('')
 
-  const [ editAuthor ] = useMutation(UPDATE_AUTHOR, {
-    refetchQueries: [ { query: ALL_AUTHORS } ]
+  const [editAuthor] = useMutation(UPDATE_AUTHOR, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
   })
 
   const result = useQuery(ALL_AUTHORS, {
-    pollInterval: 2000
+    pollInterval: 2000,
   })
 
-  if (result.loading)  {
+  if (result.loading) {
     return <div>loading...</div>
-  } 
+  }
 
-  const authors = [result.data.allAuthors]
-  
+  const authors = result.data.allAuthors
+
   const submit = async (event) => {
     event.preventDefault()
-    const setBornTo = parseInt(born)  
-    editAuthor({  variables: { author_name, setBornTo} })
-    setAuthorname('')
+    const setBornTo = parseInt(born)
+    const author_name = authorId
+    editAuthor({ variables: { author_name, setBornTo } })
+    setAuthorId('')
     setBorn('')
   }
-    return (
-      
-      <div>
-        <h2>authors</h2>
-        <table>
-          <tbody>
-            <tr>
-              <th></th>
-              <th>born</th>
-              <th>books</th>
+
+  return (
+    <div>
+      <h2>authors</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th></th>
+            <th>born</th>
+            <th>books</th>
+          </tr>
+          {authors.map((a) => (
+            <tr key={a.name}>
+              <td>{a.name}</td>
+              <td>{a.born}</td>
+              <td>{a.bookCount}</td>
             </tr>
-            {authors[0].map((a) => (
-              <tr key={a.name}>
-                <td>{a.name}</td>
-                <td>{a.born}</td>
-                <td>{a.bookCount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <h2>Set birthyear</h2>
+          ))}
+        </tbody>
+      </table>
+      <h2>Set birthyear</h2>
       <form onSubmit={submit}>
         <div>
-          name <input value={author_name}
-            onChange={({ target }) => setAuthorname(target.value)}
-          />
+          Select author:
+          <select
+            value={authorId}
+            onChange={({ target }) => setAuthorId(target.value)}
+          >
+            <option value="">Select an author</option>
+            {authors.map((a) => (
+              <option key={a.name} value={a.name}>
+                {a.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
-          born<input value={born}
+          born
+          <input
+            value={born}
             onChange={({ target }) => setBorn(target.value)}
           />
         </div>
-        <button type='submit'>update author</button>
+        <button type="submit">update author</button>
       </form>
-      </div>
-    )
-  }
-  
-  export default Authors
+    </div>
+  )
+}
+
+export default Authors;
