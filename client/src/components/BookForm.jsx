@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
-
 import { CREATE_BOOK, ALL_BOOKS } from '../queries'
 
 const BookForm = (props) => {
