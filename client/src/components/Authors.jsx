@@ -1,11 +1,10 @@
+import React from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 import { useState } from 'react'
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 
 const Authors = (props) => {
-  if (!props.show) {
-    return null
-  }
+
 
   const [authorId, setAuthorId] = useState('')
   const [born, setBorn] = useState('')
@@ -22,7 +21,11 @@ const Authors = (props) => {
     return <div>loading...</div>
   }
 
+  if (!props.show) {
+    return null
+  }
   const authors = result.data.allAuthors
+
 
   const submit = async (event) => {
     event.preventDefault()
@@ -81,4 +84,4 @@ const Authors = (props) => {
   )
 }
 
-export default Authors;
+export default Authors
