@@ -56,7 +56,7 @@ const typeDefs = `
   }
 
   type Query {
-    bookCount: Int!,
+    bookCount(author: String): Int!,
     authorCount: Int!,
     allBooks(author: String,genre: String): [Book!]!
     allAuthors: [Author!]!
@@ -103,49 +103,54 @@ const resolvers = {
   },
   Query: {
     
-    bookCount: () => {
-      return Book.find({}).length
+    bookCount: async (root, args) => {
+      if (!args.author) {
+        const bookCount = await Book.countDocuments({})
+        return bookCount
+      }
+      const author = await Author.findOne({ name: args.author})
+      const bookCount = await Book.countDocuments({author: author})
+      return bookCount
     },
-   // authorCount: () => authors.length,
-   // allAuthors: () => authors,
-   //findAuthor: async (root, args) => Author.findOne({ name: args.name }),
+
+
     allBooks: async (root, args) => {
-      // filters missing
-      return Book.find({})
-    },
+      let query = {};
+
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author });
+        query.author = author;
+      }
+
+      if (args.genre) {
+        query.genres = args.genre; // Use the provided genre as a filter
+      }
+
+      return await Book.find(query);
+  },
+
     allAuthors: async (root, args) => {
-      // filters missing
       return Author.find({})
     },
-  //   allBooks: (root, args) => {
-  //     let filteredBooks = books
-  //     if (args.author) {
-  //       filteredBooks = books.filter(b => b.author === args.author);
-  //     }
-    
-  
-  //   if (args.genre) {
-  //     filteredBooks = filteredBooks.filter(b => b.genres.includes(args.genre));
-  //   }
-  
-  //   return filteredBooks;
-  // }
   
   },
   Book: {
     title: (root) => root.title,
     published: (root) => root.published,
     genres: (root) => root.genres,
-    author: (root) => {
-      return { 
-      name: root.author.name,
-      }
+    author: async (root) => {
+      const author = await Author.findById(root.author);
+      return author;
     }
   },
   Author: {
     name: (root) => root.name,
     born: (root) => root.born,
-//    bookCount: (root) => books.filter(book => book.author === root.name).length
+    bookCount: async (root) => {
+      const author = await Author.findOne({ name: root.name})
+      const bookCount = await Book.countDocuments({author: author})
+      return bookCount
+    }
   },
 }
 
