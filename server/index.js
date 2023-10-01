@@ -78,7 +78,6 @@ const resolvers = {
         return book.save()
       }
       book.author = author
-      //console.log(book, "book")
       return book.save()
     },
     
@@ -103,7 +102,10 @@ const resolvers = {
     }
   },
   Query: {
-   // bookCount: () => books.length,
+    
+    bookCount: () => {
+      return Book.find({}).length
+    },
    // authorCount: () => authors.length,
    // allAuthors: () => authors,
    //findAuthor: async (root, args) => Author.findOne({ name: args.name }),
@@ -136,7 +138,7 @@ const resolvers = {
     genres: (root) => root.genres,
     author: (root) => {
       return { 
-      name: root.author,
+      name: root.author.name,
       }
     }
   },
