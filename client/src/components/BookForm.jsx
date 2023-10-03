@@ -16,7 +16,6 @@ const BookForm = (props) => {
     refetchQueries: [ { query: ALL_BOOKS } ]
   })
 
-
   const addGenre = async (event) => {
     event.preventDefault()
     if (genre) {
@@ -24,7 +23,6 @@ const BookForm = (props) => {
       setGenre('')
     }
   }
-
 
   const submit = async (event) => {
     event.preventDefault()

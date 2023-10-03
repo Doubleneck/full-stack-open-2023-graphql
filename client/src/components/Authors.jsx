@@ -5,7 +5,7 @@ import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 
 const Authors = (props) => {
 
-
+  const token = localStorage.getItem('books-user-token')
   const [authorId, setAuthorId] = useState('')
   const [born, setBorn] = useState('')
 
@@ -55,31 +55,36 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <h2>Set birthyear</h2>
-      <form onSubmit={submit}>
+
+      { token && (
         <div>
+          <h2>Set birthyear</h2>
+          <form onSubmit={submit}>
+            <div>
           Select author:
-          <select
-            value={authorId}
-            onChange={({ target }) => setAuthorId(target.value)}
-          >
-            <option value="">Select an author</option>
-            {authors.map((a) => (
-              <option key={a.name} value={a.name}>
-                {a.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
+              <select
+                value={authorId}
+                onChange={({ target }) => setAuthorId(target.value)}
+              >
+                <option value="">Select an author</option>
+                {authors.map((a) => (
+                  <option key={a.name} value={a.name}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
           born
-          <input
-            value={born}
-            onChange={({ target }) => setBorn(target.value)}
-          />
+              <input
+                value={born}
+                onChange={({ target }) => setBorn(target.value)}
+              />
+            </div>
+            <button type="submit">update author</button>
+          </form>
         </div>
-        <button type="submit">update author</button>
-      </form>
+      )}
     </div>
   )
 }
