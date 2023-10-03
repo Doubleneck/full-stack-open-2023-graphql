@@ -7,7 +7,6 @@ const schema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    unique: true,
     minlength: 5
   },
   published: {
@@ -18,7 +17,7 @@ const schema = new mongoose.Schema({
     ref: 'Author'
   },
   genres: [
-    { type: String}
+    { type: String }
   ]
 })
 
