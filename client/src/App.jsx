@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import BookForm from './components/BookForm'
@@ -10,6 +10,11 @@ const App = () => {
   const [token, setToken] = useState(null)
   const [page, setPage] = useState('authors')
   const client = useApolloClient()
+
+  useEffect(() => {
+    const token = localStorage.getItem('books-user-token')
+    setToken(token)
+  }, [page, token])
 
   const logout = () => {
     setToken(null)
