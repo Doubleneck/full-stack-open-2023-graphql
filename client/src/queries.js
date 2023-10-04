@@ -17,16 +17,16 @@ export const ALL_AUTHORS = gql`
     }
 `
 export const ALL_BOOKS = gql`
-query {
-  allBooks {
-    title
-    author {
-      name
+    query {
+      allBooks {
+        title
+        author {
+          name
+        }
+        published
+        genres
+      }
     }
-    published
-    genres
-  }
-}
 `
 
 export const CREATE_BOOK = gql`
