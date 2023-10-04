@@ -10,8 +10,6 @@ const App = () => {
   const [page, setPage] = useState('authors')
   const client = useApolloClient()
 
-
-
   const logout = () => {
     setToken(null)
     localStorage.clear()

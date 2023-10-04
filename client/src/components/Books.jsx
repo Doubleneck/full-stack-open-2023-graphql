@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from '../queries'
-import { useState } from 'react'
+import { ALL_BOOKS , BOOKS_BY_GENRE } from '../queries'
+import { useState , useEffect } from 'react'
 const Books = (props) => {
   if (!props.show) {
     return null
@@ -14,49 +14,58 @@ const Books = (props) => {
   const initBooks = result.data.allBooks
 
   const [books, setBooks] = useState(initBooks)
-  const [genreToShow, setGenreToShow] = useState(null)
+  const [genreToSearch, setGenreToSearch] = useState(null)
 
+  const filteredBooks = useQuery(BOOKS_BY_GENRE, {
+    variables: { genreToSearch },
+    skip: !genreToSearch,
+    pollInterval: 2000
+  })
+
+  useEffect(() => {
+    if (genreToSearch === null) {
+      setBooks(initBooks)
+      return
+    }
+    if (filteredBooks.data) {
+      setBooks(filteredBooks.data.allBooks)
+    }
+  }
+  , [genreToSearch])
 
 
   const setGenre = (genre) => {
+    setGenreToSearch(genre)
     if (genre === null) {
       setBooks(initBooks)
-      setGenreToShow(null)
+      setGenreToSearch(null)
       return
     }
-    setGenreToShow(genre)
-    const filteredBooks = books.filter(b => b.genres.includes(genre))
-    setBooks(filteredBooks)
   }
-
 
   const uniqueGenres = new Set()
 
   books.forEach(book => {
     const genres= book.genres
     genres.forEach(genre => uniqueGenres.add(genre))
-
   })
   const genreList = [...uniqueGenres]
 
   return (
-
     <div>
       <h2>books</h2>
-      {genreToShow &&  (
+      {genreToSearch &&  (
         <div>
-          <>In genre <strong>{ genreToShow }</strong></>
+          <>In genre <strong>{ genreToSearch }</strong></>
         </div>
       )}
       <table>
         <tbody>
           <tr>
             <th></th>
-
             <th>author</th>
             <th>published</th>
             <th>genres</th>
-
           </tr>
           {books.map((b) => (
             <tr key={b.title}>
@@ -75,7 +84,6 @@ const Books = (props) => {
         ))}
         <button onClick={() => setGenre(null)}>all genres</button>
       </div>
-
     </div>
   )
 }
