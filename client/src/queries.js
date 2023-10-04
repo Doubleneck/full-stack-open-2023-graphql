@@ -7,6 +7,14 @@ export const LOGIN = gql`
     }
   }
 `
+export const LOGGED_USER = gql`
+    query {
+      me {
+        username
+        favoriteGenre
+      }
+    }
+`
 export const ALL_AUTHORS = gql`
     query {
       allAuthors {
@@ -29,8 +37,9 @@ export const ALL_BOOKS = gql`
     }
 `
 
+
 export const BOOKS_BY_GENRE= gql`
-    query findBooksByGenre($genreToSearch: String!) {
+    query findBooksByGenre($genreToSearch: String) {
       allBooks (genre: $genreToSearch) {
         title
         author {
