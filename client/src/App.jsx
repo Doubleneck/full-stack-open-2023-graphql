@@ -1,11 +1,13 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import { useApolloClient, useSubscription } from '@apollo/client'
+import { BOOK_ADDED } from './queries.js'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import BookForm from './components/BookForm'
 import LoginForm from './components/Loginform'
 import Recommend from './components/Recommend'
-import { useApolloClient } from '@apollo/client'
+
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -22,6 +24,16 @@ const App = () => {
     localStorage.clear()
     client.resetStore()
   }
+
+
+  useSubscription(BOOK_ADDED, {
+
+    onData: ({ data }) => {
+      const title = data.data.bookAdded.title
+      const author = data.data.bookAdded.author.name
+      window.alert(`A Book with title: ${title} by ${author} added!`)
+    }
+  })
 
   if (!token) {
     return (

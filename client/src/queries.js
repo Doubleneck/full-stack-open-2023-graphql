@@ -15,6 +15,24 @@ export const LOGGED_USER = gql`
       }
     }
 `
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    id
+    title
+    genres
+    author {
+      name
+    }
+  }
+`
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`
 export const ALL_AUTHORS = gql`
     query {
       allAuthors {
