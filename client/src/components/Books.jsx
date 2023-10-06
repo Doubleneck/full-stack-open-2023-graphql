@@ -1,33 +1,23 @@
 import { useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
-import { useState , useEffect } from 'react'
+import { useState } from 'react'
 const Books = (props) => {
-  if (!props.show) {
-    return null
-  }
+
   const result = useQuery(ALL_BOOKS, {
     pollInterval: 2000
   })
+  const [genreToSearch, setGenreToSearch] = useState(null)
 
   if (result.loading)  {
     return <div>loading...</div>
   }
+  if (!props.show) {
+    return null
+  }
+
   const initBooks = result.data.allBooks
-  const [genreToSearch, setGenreToSearch] = useState(null)
-  const [books, setBooks] = useState(initBooks)
-
-  useEffect(() => {
-    if (result.loading) {
-      return
-    }
-
-    if (genreToSearch === null) {
-      setBooks(initBooks)
-    } else {
-      const filteredBooks = initBooks.filter(b => b.genres.includes(genreToSearch))
-      setBooks(filteredBooks)
-    }
-  }, [genreToSearch])
+  const filteredBooks = initBooks.filter(b => b.genres.includes(genreToSearch))
+  const books = genreToSearch ? filteredBooks : initBooks
 
   const setGenre = (genre) => {
     setGenreToSearch(genre)
